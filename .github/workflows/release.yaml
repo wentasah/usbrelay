@@ -1,0 +1,22 @@
+name: Releases
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Create release files
+      run: |
+        make release &&
+        f=$(echo usbrelay-*.tar.gz); mv -v "$f" "${f#usbrelay-}"
+        f=$(echo usbrelay-*.zip); mv -v "$f" "${f#usbrelay-}"
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "usbrelay-*.tar.gz,uzbrelay-*.zip"
+        token: ${{ secrets.GITHUB_TOKEN }}
